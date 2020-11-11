@@ -82,7 +82,9 @@ public final class Bootstrap {
                 // no config file, default to this loader - we might be in a 'single' env.
                 commonLoader = this.getClass().getClassLoader();
             }
+            // server.loader默认为空
             catalinaLoader = createClassLoader("server", commonLoader);
+            // shared.loader默认为空
             sharedLoader = createClassLoader("shared", commonLoader);
         } catch (Throwable t) {
             handleThrowable(t);
@@ -141,7 +143,7 @@ public final class Bootstrap {
                 repositories.add(new Repository(repository, RepositoryType.DIR));
             }
         }
-
+        // 创建类加载器
         return ClassLoaderFactory.createClassLoader(repositories, parent);
     }
 
@@ -204,7 +206,7 @@ public final class Bootstrap {
         // 初始化catalina.base
         setCatalinaBase();
 
-        // 初始化类加载器
+        // 初始化类加载器，包括commonLoader，catalinaLoader，sharedLoader
         initClassLoaders();
 
         Thread.currentThread().setContextClassLoader(catalinaLoader);
@@ -215,7 +217,11 @@ public final class Bootstrap {
         if (log.isDebugEnabled()) {
             log.debug("Loading startup class");
         }
+
+        // 加载启动类Catalina
         Class<?> startupClass = catalinaLoader.loadClass("org.apache.catalina.startup.Catalina");
+
+        // 通过反射创建Catalina实例
         Object startupInstance = startupClass.newInstance();
 
         // Set the shared extensions class loader
@@ -230,8 +236,11 @@ public final class Bootstrap {
         paramValues[0] = sharedLoader;
 
         Method method = startupInstance.getClass().getMethod(methodName, paramTypes);
+
+        // 通过反射调用Catalina类的setParentClassLoader方法，设置parentClassLoader
         method.invoke(startupInstance, paramValues);
 
+        // 将反射创建的Catalina实例对象赋值给catalinaDaemon
         catalinaDaemon = startupInstance;
     }
 
@@ -244,9 +253,10 @@ public final class Bootstrap {
 
         // Call the load() method
         String methodName = "load";
-        Object param[];
-        Class<?> paramTypes[];
-        if (arguments==null || arguments.length==0) {
+        Object[] param;
+        Class<?>[] paramTypes;
+        // 默认的arguments的值为null
+        if (arguments == null || arguments.length == 0) {
             paramTypes = null;
             param = null;
         } else {
@@ -255,12 +265,13 @@ public final class Bootstrap {
             param = new Object[1];
             param[0] = arguments;
         }
+        // 通过反射执行Catalina对象的load方法
         Method method =
             catalinaDaemon.getClass().getMethod(methodName, paramTypes);
-        if (log.isDebugEnabled())
+        if (log.isDebugEnabled()) {
             log.debug("Calling startup class " + method);
+        }
         method.invoke(catalinaDaemon, param);
-
     }
 
 
@@ -297,7 +308,9 @@ public final class Bootstrap {
      */
     public void start()
         throws Exception {
-        if( catalinaDaemon==null ) init();
+        if( catalinaDaemon==null ) {
+            init();
+        }
 
         Method method = catalinaDaemon.getClass().getMethod("start", (Class [] )null);
         method.invoke(catalinaDaemon, (Object [])null);
@@ -365,6 +378,8 @@ public final class Bootstrap {
         Object[] paramValues = new Object[1];
         paramValues[0] = await;
         Method method = catalinaDaemon.getClass().getMethod("setAwait", paramTypes);
+
+        // 通过反射调用Catalina对象的setAwait方法，设置await的值.
         method.invoke(catalinaDaemon, paramValues);
 
     }
@@ -420,7 +435,9 @@ public final class Bootstrap {
         }
 
         try {
+            // 通过命令后面的参数区分调用的是BootStrap中的哪个方法. stop,start,configtest,startd,stopd
             String command = "start";
+            // 默认直接通过Bootstrap的main方法启动时，args参数为空。此时command的值为"start"
             if (args.length > 0) {
                 command = args[args.length - 1];
             }

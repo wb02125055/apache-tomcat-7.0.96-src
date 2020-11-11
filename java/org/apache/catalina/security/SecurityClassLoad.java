@@ -25,6 +25,11 @@ package org.apache.catalina.security;
  */
 public final class SecurityClassLoad {
 
+    /**
+     * 为了安全加载类，Tomcat中通过org.apache.catalina.security.SecurityClassLoad来预加载Tomcat自身的核心类
+     * （如果启用了SecurityManager的话，通过Tomcat的参数-security来开启），以免在之后触发AccessControlException
+     *  的RuntimePermission.
+     */
     public static void securityClassLoad(ClassLoader loader) throws Exception {
 
 

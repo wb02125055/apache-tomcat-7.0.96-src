@@ -156,12 +156,14 @@ public final class ClassLoaderFactory {
                                                 final ClassLoader parent)
         throws Exception {
 
-        if (log.isDebugEnabled())
+        if (log.isDebugEnabled()) {
             log.debug("Creating new class loader");
+        }
 
         // Construct the "class path" for this class loader
         Set<URL> set = new LinkedHashSet<>();
 
+        // 按照资源类型将资源对象汇总到一个set集合中，所以上述重复的4个资源，经过汇总之后，会变成1个
         if (repositories != null) {
             for (Repository repository : repositories)  {
                 if (repository.getType() == RepositoryType.URL) {
@@ -222,12 +224,14 @@ public final class ClassLoaderFactory {
         }
 
         // Construct the class loader itself
+        // set: 默认size为1，值为：URL对象，指向的资源为：file:/D:/ApacheSoft-SourceCode/apache-tomcat-7.0.96-src/home/lib/
         final URL[] array = set.toArray(new URL[set.size()]);
         if (log.isDebugEnabled())
             for (int i = 0; i < array.length; i++) {
                 log.debug("  location " + i + " is " + array[i]);
             }
 
+        // 返回URLClassLoader类加载器
         return AccessController.doPrivileged(
                 new PrivilegedAction<URLClassLoader>() {
                     @Override

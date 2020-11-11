@@ -549,6 +549,7 @@ public class Catalina {
 
     /**
      * Start a new server instance.
+     * 启动一个服务实例
      */
     public void load() {
 
@@ -557,12 +558,13 @@ public class Catalina {
         }
         loaded = true;
 
+        // 记录server启动开始时间
         long t1 = System.nanoTime();
 
+        // 初始化系统变量。包括：catalina.home和catalina.base
         initDirs();
 
         // Before digester - it may be needed
-
         initNaming();
 
         // Create and execute our Digester
@@ -816,7 +818,7 @@ public class Catalina {
 
 
     protected void initDirs() {
-
+        // catalinaHome: D:/ApacheSoft-SourceCode/apache-tomcat-7.0.96-src/home
         String catalinaHome = System.getProperty(Globals.CATALINA_HOME_PROP);
         if (catalinaHome == null) {
             // Backwards compatibility patch for J2EE RI 1.3
@@ -828,10 +830,11 @@ public class Catalina {
             }
         }
         // last resort - for minimal/embedded cases.
-        if(catalinaHome==null) {
-            catalinaHome=System.getProperty("user.dir");
+        if(catalinaHome == null) {
+            catalinaHome = System.getProperty("user.dir");
         }
         if (catalinaHome != null) {
+            // 读取D:/ApacheSoft-SourceCode/apache-tomcat-7.0.96-src/home下的文件内容
             File home = new File(catalinaHome);
             if (!home.isAbsolute()) {
                 try {
@@ -840,13 +843,14 @@ public class Catalina {
                     catalinaHome = home.getAbsolutePath();
                 }
             }
+            // 设置catalina.home为D:/ApacheSoft-SourceCode/apache-tomcat-7.0.96-src/home
             System.setProperty(Globals.CATALINA_HOME_PROP, catalinaHome);
         }
 
         if (System.getProperty(Globals.CATALINA_BASE_PROP) == null) {
-            System.setProperty(Globals.CATALINA_BASE_PROP,
-                               catalinaHome);
+            System.setProperty(Globals.CATALINA_BASE_PROP, catalinaHome);
         } else {
+            // catalina.base的值: D:/ApacheSoft-SourceCode/apache-tomcat-7.0.96-src/home
             String catalinaBase = System.getProperty(Globals.CATALINA_BASE_PROP);
             File base = new File(catalinaBase);
             if (!base.isAbsolute()) {
@@ -856,6 +860,7 @@ public class Catalina {
                     catalinaBase = base.getAbsolutePath();
                 }
             }
+            // D:/ApacheSoft-SourceCode/apache-tomcat-7.0.96-src/home
             System.setProperty(Globals.CATALINA_BASE_PROP, catalinaBase);
         }
 
@@ -864,7 +869,6 @@ public class Catalina {
                 || (!(new File(temp)).isDirectory())) {
             log.error(sm.getString("embedded.notmp", temp));
         }
-
     }
 
 

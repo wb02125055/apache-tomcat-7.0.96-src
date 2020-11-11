@@ -48,6 +48,7 @@ public class CatalinaProperties {
 
     static {
 
+        // 初始化加载catalina.properties配置文件
         loadProperties();
 
     }
@@ -60,9 +61,7 @@ public class CatalinaProperties {
      * Return specified property value.
      */
     public static String getProperty(String name) {
-
         return properties.getProperty(name);
-
     }
 
 
