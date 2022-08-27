@@ -39,7 +39,7 @@ public interface Rules {
      * Return the Digester instance with which this Rules instance is
      * associated.
      */
-    public Digester getDigester();
+    Digester getDigester();
 
 
     /**
@@ -47,14 +47,14 @@ public interface Rules {
      *
      * @param digester The newly associated Digester instance
      */
-    public void setDigester(Digester digester);
+    void setDigester(Digester digester);
 
 
     /**
      * Return the namespace URI that will be applied to all subsequently
      * added <code>Rule</code> objects.
      */
-    public String getNamespaceURI();
+    String getNamespaceURI();
 
 
     /**
@@ -65,7 +65,7 @@ public interface Rules {
      *  subsequently added rules, or <code>null</code> for matching
      *  regardless of the current namespace URI
      */
-    public void setNamespaceURI(String namespaceURI);
+    void setNamespaceURI(String namespaceURI);
 
 
     // --------------------------------------------------------- Public Methods
@@ -77,13 +77,13 @@ public interface Rules {
      * @param pattern Nesting pattern to be matched for this Rule
      * @param rule Rule instance to be registered
      */
-    public void add(String pattern, Rule rule);
+    void add(String pattern, Rule rule);
 
 
     /**
      * Clear all existing Rule instance registrations.
      */
-    public void clear();
+    void clear();
 
 
     /**
@@ -97,7 +97,7 @@ public interface Rules {
      *  or <code>null</code> to match regardless of namespace URI
      * @param pattern Nesting pattern to be matched
      */
-    public List<Rule> match(String namespaceURI, String pattern);
+    List<Rule> match(String namespaceURI, String pattern);
 
 
     /**
@@ -107,7 +107,5 @@ public interface Rules {
      * in the order originally registered through the <code>add()</code>
      * method.
      */
-    public List<Rule> rules();
-
-
+    List<Rule> rules();
 }

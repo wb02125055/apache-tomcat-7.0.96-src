@@ -165,8 +165,7 @@ public abstract class HttpServlet extends GenericServlet {
      * @see javax.servlet.ServletResponse#setContentType
      */
     protected void doGet(HttpServletRequest req, HttpServletResponse resp)
-        throws ServletException, IOException
-    {
+        throws ServletException, IOException {
         String protocol = req.getProtocol();
         String msg = lStrings.getString("http.method_get_not_supported");
         if (protocol.endsWith("1.1")) {

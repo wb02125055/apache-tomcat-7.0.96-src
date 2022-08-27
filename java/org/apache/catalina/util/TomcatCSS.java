@@ -31,7 +31,5 @@ public class TomcatCSS {
         "A {color : black;}" +
         "A.name {color : black;}" +
         "HR {color : #525D76;}";
-
-
 }
 

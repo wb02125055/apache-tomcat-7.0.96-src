@@ -32,8 +32,8 @@ public final class SecurityClassLoad {
      */
     public static void securityClassLoad(ClassLoader loader) throws Exception {
 
-
-        if( System.getSecurityManager() == null ){
+        // 默认不开启
+        if (System.getSecurityManager() == null) {
             return;
         }
 

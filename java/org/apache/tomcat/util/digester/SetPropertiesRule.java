@@ -37,6 +37,18 @@ import org.xml.sax.Attributes;
 public class SetPropertiesRule extends Rule {
 
 
+    // ----------------------------------------------------- Instance Variables
+
+    /**
+     * Attribute names used to override natural attribute->property mapping
+     */
+    private String [] attributeNames;
+    /**
+     * Property names used to override natural attribute->property mapping
+     */
+    private String [] propertyNames;
+
+
     // ----------------------------------------------------------- Constructors
 
 
@@ -50,9 +62,7 @@ public class SetPropertiesRule extends Rule {
      */
     @Deprecated
     public SetPropertiesRule(Digester digester) {
-
         this();
-
     }
 
 
@@ -60,9 +70,7 @@ public class SetPropertiesRule extends Rule {
      * Base constructor.
      */
     public SetPropertiesRule() {
-
         // nothing to set up
-
     }
 
     /**
@@ -75,7 +83,6 @@ public class SetPropertiesRule extends Rule {
      * @param propertyName to a property with this name
      */
     public SetPropertiesRule(String attributeName, String propertyName) {
-
         attributeNames = new String[1];
         attributeNames[0] = attributeName;
         propertyNames = new String[1];
@@ -125,23 +132,11 @@ public class SetPropertiesRule extends Rule {
         for (int i=0, size=attributeNames.length; i<size; i++) {
             this.attributeNames[i] = attributeNames[i];
         }
-
         this.propertyNames = new String[propertyNames.length];
         for (int i=0, size=propertyNames.length; i<size; i++) {
             this.propertyNames[i] = propertyNames[i];
         }
     }
-
-    // ----------------------------------------------------- Instance Variables
-
-    /**
-     * Attribute names used to override natural attribute->property mapping
-     */
-    private String [] attributeNames;
-    /**
-     * Property names used to override natural attribute->property mapping
-     */
-    private String [] propertyNames;
 
 
     // --------------------------------------------------------- Public Methods
@@ -265,11 +260,9 @@ public class SetPropertiesRule extends Rule {
      */
     @Override
     public String toString() {
-
         StringBuilder sb = new StringBuilder("SetPropertiesRule[");
         sb.append("]");
         return (sb.toString());
-
     }
 
 

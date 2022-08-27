@@ -34,6 +34,25 @@ import org.apache.tomcat.util.IntrospectionUtils;
 
 public class SetNextRule extends Rule {
 
+// ----------------------------------------------------- Instance Variables
+
+
+    /**
+     * The method name to call on the parent object.
+     */
+    protected String methodName = null;
+
+
+    /**
+     * The Java class name of the parameter type expected by the method.
+     */
+    protected String paramType = null;
+
+    /**
+     * Should we use exact matching. Default is no.
+     */
+    protected boolean useExactMatch = false;
+
 
     // ----------------------------------------------------------- Constructors
 
@@ -109,25 +128,6 @@ public class SetNextRule extends Rule {
 
     }
 
-
-    // ----------------------------------------------------- Instance Variables
-
-
-    /**
-     * The method name to call on the parent object.
-     */
-    protected String methodName = null;
-
-
-    /**
-     * The Java class name of the parameter type expected by the method.
-     */
-    protected String paramType = null;
-
-    /**
-     * Should we use exact matching. Default is no.
-     */
-    protected boolean useExactMatch = false;
 
     // --------------------------------------------------------- Public Methods
 

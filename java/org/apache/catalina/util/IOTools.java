@@ -29,7 +29,7 @@ import java.io.Writer;
  * @author Dan Sandberg
  */
 public class IOTools {
-    protected static final int DEFAULT_BUFFER_SIZE=4*1024; //4k
+    protected static final int DEFAULT_BUFFER_SIZE = 4 * 1024; //4k
 
     private IOTools() {
       //Ensure non-instantiability
@@ -71,7 +71,7 @@ public class IOTools {
     public static void flow( InputStream is, OutputStream os, byte[] buf )
         throws IOException {
         int numRead;
-        while ( (numRead = is.read(buf) ) >= 0) {
+        while ((numRead = is.read(buf) ) >= 0) {
             if (os != null) {
                 os.write(buf, 0, numRead);
             }

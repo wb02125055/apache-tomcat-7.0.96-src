@@ -63,7 +63,12 @@ public final class SecurityConfig{
      */
     private SecurityConfig(){
         try{
+            // 获取catalina.properties配置文件中配置的"package.definition"配置
+            // sun.,java.,org.apache.catalina.,org.apache.coyote.,org.apache.jasper.,org.apache.naming.,org.apache.tomcat.
             packageDefinition = CatalinaProperties.getProperty("package.definition");
+
+            // 获取catalina.properties配置文件中配置的"package.access"配置
+            // sun.,org.apache.catalina.,org.apache.coyote.,org.apache.jasper.,org.apache.naming.resources.,org.apache.tomcat.
             packageAccess = CatalinaProperties.getProperty("package.access");
         } catch (java.lang.Exception ex){
             if (log.isDebugEnabled()){
@@ -78,7 +83,8 @@ public final class SecurityConfig{
      * @return an instance of that class.
      */
     public static SecurityConfig newInstance(){
-        if (singleton == null){
+        if (singleton == null) {
+            // 创建SecurityConfig实例对象，在SecurityConfig构造函数中进行packageDefinition和packageAccess的设置
             singleton = new SecurityConfig();
         }
         return singleton;

@@ -807,11 +807,7 @@ public class MBeanUtils {
     @Deprecated
     static ObjectName createObjectName(String domain, MBeanFactory factory)
         throws MalformedObjectNameException {
-
-        ObjectName name = new ObjectName(domain + ":type=MBeanFactory");
-
-        return (name);
-
+        return new ObjectName(domain + ":type=MBeanFactory");
     }
 
 

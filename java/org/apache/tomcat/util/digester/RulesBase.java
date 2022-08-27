@@ -87,9 +87,7 @@ public class RulesBase implements Rules {
      */
     @Override
     public Digester getDigester() {
-
         return (this.digester);
-
     }
 
 
@@ -100,14 +98,12 @@ public class RulesBase implements Rules {
      */
     @Override
     public void setDigester(Digester digester) {
-
         this.digester = digester;
         Iterator<Rule> items = rules.iterator();
         while (items.hasNext()) {
             Rule item = items.next();
             item.setDigester(digester);
         }
-
     }
 
 
@@ -117,9 +113,7 @@ public class RulesBase implements Rules {
      */
     @Override
     public String getNamespaceURI() {
-
         return (this.namespaceURI);
-
     }
 
 
@@ -133,9 +127,7 @@ public class RulesBase implements Rules {
      */
     @Override
     public void setNamespaceURI(String namespaceURI) {
-
         this.namespaceURI = namespaceURI;
-
     }
 
 
@@ -179,10 +171,8 @@ public class RulesBase implements Rules {
      */
     @Override
     public void clear() {
-
         cache.clear();
         rules.clear();
-
     }
 
 
@@ -237,9 +227,7 @@ public class RulesBase implements Rules {
      */
     @Override
     public List<Rule> rules() {
-
         return (this.rules);
-
     }
 
 
@@ -277,8 +265,6 @@ public class RulesBase implements Rules {
             }
         }
         return (results);
-
     }
-
 
 }

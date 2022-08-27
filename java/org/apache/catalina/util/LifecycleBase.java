@@ -34,9 +34,9 @@ import org.apache.tomcat.util.res.StringManager;
  */
 public abstract class LifecycleBase implements Lifecycle {
 
-    private static Log log = LogFactory.getLog(LifecycleBase.class);
+    private static final Log log = LogFactory.getLog(LifecycleBase.class);
 
-    private static StringManager sm =
+    private static final StringManager sm =
         StringManager.getManager("org.apache.catalina.util");
 
 
@@ -44,7 +44,7 @@ public abstract class LifecycleBase implements Lifecycle {
      * Used to handle firing lifecycle events.
      * TODO: Consider merging LifecycleSupport into this class.
      */
-    private LifecycleSupport lifecycle = new LifecycleSupport(this);
+    private final LifecycleSupport lifecycle = new LifecycleSupport(this);
 
 
     /**
@@ -93,13 +93,21 @@ public abstract class LifecycleBase implements Lifecycle {
 
     @Override
     public final synchronized void init() throws LifecycleException {
+        // 初始化Server时，如果当前的状态不是New，则抛异常结束
         if (!state.equals(LifecycleState.NEW)) {
             invalidTransition(Lifecycle.BEFORE_INIT_EVENT);
         }
 
         try {
+            // 监听器模式
+            // 触发INITIALIZING生命周期事件，里面会执行实现了LifecycleListener接口的类中的lifecycleEvent方法
+            // 例如：VersionLoggerListener会在lifecycleEvent中打印日志
             setStateInternal(LifecycleState.INITIALIZING, null, false);
+
+            // 调用StandardServer的initInternal方法完成tomcat服务器的启动
             initInternal();
+
+            // 触发INITIALIZED生命周期事件
             setStateInternal(LifecycleState.INITIALIZED, null, false);
         } catch (Throwable t) {
             ExceptionUtils.handleThrowable(t);
@@ -141,8 +149,12 @@ public abstract class LifecycleBase implements Lifecycle {
         }
 
         try {
+            // 设置状态为before_start
             setStateInternal(LifecycleState.STARTING_PREP, null, false);
+
+            // 启动
             startInternal();
+
             if (state.equals(LifecycleState.FAILED)) {
                 // This is a 'controlled' failure. The component put itself into the
                 // FAILED state so call stop() to complete the clean-up.
@@ -382,8 +394,11 @@ public abstract class LifecycleBase implements Lifecycle {
         }
 
         this.state = state;
+        // "INITIALIZING"对应的lifecycleEvent为 "before_init"
+        // "INITIALIZED"对应的livecycleEvent为 "after_init"
         String lifecycleEvent = state.getLifecycleEvent();
         if (lifecycleEvent != null) {
+            // 触发生命周期事件
             fireLifecycleEvent(lifecycleEvent, data);
         }
     }

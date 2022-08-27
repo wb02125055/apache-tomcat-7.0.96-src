@@ -51,7 +51,7 @@ import java.util.ResourceBundle;
  */
 public class StringManager {
 
-    private static int LOCALE_CACHE_SIZE = 10;
+    private static final int LOCALE_CACHE_SIZE = 10;
 
     /**
      * The ResourceBundle for this StringManager.

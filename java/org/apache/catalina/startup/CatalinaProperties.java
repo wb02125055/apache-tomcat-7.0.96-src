@@ -92,6 +92,7 @@ public class CatalinaProperties {
         try {
             // 获取catalina.config
             String configUrl = getConfigUrl();
+            System.out.println("[wb]configUrl: " + configUrl);
             if (configUrl != null) {
                 is = (new URL(configUrl)).openStream();
             }
@@ -111,6 +112,7 @@ public class CatalinaProperties {
                 File propsFile = new File(conf, "catalina.properties");
                 is = new FileInputStream(propsFile);
             } catch (Throwable t) {
+                // 处理异常
                 handleThrowable(t);
             }
         }
@@ -132,9 +134,7 @@ public class CatalinaProperties {
             } catch (Throwable t) {
                 handleThrowable(t);
                 error = t;
-            }
-            finally
-            {
+            } finally {
                 try {
                     is.close();
                 } catch (IOException ioe) {
@@ -147,7 +147,7 @@ public class CatalinaProperties {
             // Do something
             log.warn("Failed to load catalina.properties", error);
             // That's fine - we have reasonable defaults.
-            properties=new Properties();
+            properties = new Properties();
         }
 
         // Register the properties as system properties
@@ -156,9 +156,14 @@ public class CatalinaProperties {
         while (enumeration.hasMoreElements()) {
             // catalina.properties中的key
             String name = (String) enumeration.nextElement();
+
             // catalina.properties中的value
             String value = properties.getProperty(name);
+
             if (value != null) {
+
+                System.out.println("[wb]loadProperties, name: " + name + ", value: " + value);
+
                 System.setProperty(name, value);
             }
         }

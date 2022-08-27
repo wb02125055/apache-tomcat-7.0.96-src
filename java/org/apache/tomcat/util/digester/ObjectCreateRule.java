@@ -31,6 +31,17 @@ import org.xml.sax.Attributes;
 public class ObjectCreateRule extends Rule {
 
 
+    // ----------------------------------------------------- Instance Variables
+    /**
+     * The attribute containing an override class name if it is present.
+     */
+    protected String attributeName;
+    /**
+     * The Java class name of the object to be created.
+     */
+    protected String className;
+
+
     // ----------------------------------------------------------- Constructors
 
 
@@ -40,9 +51,7 @@ public class ObjectCreateRule extends Rule {
      * @param className Java class name of the object to be created
      */
     public ObjectCreateRule(String className) {
-
         this(className, (String) null);
-
     }
 
 
@@ -52,9 +61,7 @@ public class ObjectCreateRule extends Rule {
      * @param clazz Java class name of the object to be created
      */
     public ObjectCreateRule(Class<?> clazz) {
-
         this(clazz.getName(), (String) null);
-
     }
 
 
@@ -68,10 +75,8 @@ public class ObjectCreateRule extends Rule {
      */
     public ObjectCreateRule(String className,
                             String attributeName) {
-
         this.className = className;
         this.attributeName = attributeName;
-
     }
 
 
@@ -85,25 +90,8 @@ public class ObjectCreateRule extends Rule {
      */
     public ObjectCreateRule(String attributeName,
                             Class<?> clazz) {
-
         this(clazz.getName(), attributeName);
-
     }
-
-    // ----------------------------------------------------- Instance Variables
-
-
-    /**
-     * The attribute containing an override class name if it is present.
-     */
-    protected String attributeName = null;
-
-
-    /**
-     * The Java class name of the object to be created.
-     */
-    protected String className = null;
-
 
     // --------------------------------------------------------- Public Methods
 
@@ -158,13 +146,11 @@ public class ObjectCreateRule extends Rule {
      */
     @Override
     public void end(String namespace, String name) throws Exception {
-
         Object top = digester.pop();
         if (digester.log.isDebugEnabled()) {
             digester.log.debug("[ObjectCreateRule]{" + digester.match +
                     "} Pop " + top.getClass().getName());
         }
-
     }
 
 
@@ -173,7 +159,6 @@ public class ObjectCreateRule extends Rule {
      */
     @Override
     public String toString() {
-
         StringBuilder sb = new StringBuilder("ObjectCreateRule[");
         sb.append("className=");
         sb.append(className);
@@ -181,8 +166,6 @@ public class ObjectCreateRule extends Rule {
         sb.append(attributeName);
         sb.append("]");
         return (sb.toString());
-
     }
-
 
 }

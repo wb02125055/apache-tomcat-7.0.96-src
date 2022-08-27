@@ -167,7 +167,7 @@ public class StandardHost extends ContainerBase implements Host {
       * Track the class loaders for the child web applications so memory leaks
       * can be detected.
       */
-     private Map<ClassLoader, String> childClassLoaders =
+     private final Map<ClassLoader, String> childClassLoaders =
          new WeakHashMap<ClassLoader, String>();
 
 
@@ -624,7 +624,7 @@ public class StandardHost extends ContainerBase implements Host {
                     return;
             }
             // Add this alias to the list
-            String newAliases[] = new String[aliases.length + 1];
+            String[] newAliases = new String[aliases.length + 1];
             for (int i = 0; i < aliases.length; i++)
                 newAliases[i] = aliases[i];
             newAliases[aliases.length] = alias;
@@ -759,7 +759,7 @@ public class StandardHost extends ContainerBase implements Host {
 
             // Remove the specified alias
             int j = 0;
-            String results[] = new String[aliases.length - 1];
+            String[] results = new String[aliases.length - 1];
             for (int i = 0; i < aliases.length; i++) {
                 if (i != n)
                     results[j++] = aliases[i];

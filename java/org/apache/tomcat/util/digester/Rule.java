@@ -29,30 +29,24 @@ import org.xml.sax.Attributes;
 
 public abstract class Rule {
 
+    // ----------------------------------------------------- Instance Variables
+    /**
+     * The Digester with which this Rule is associated.
+     */
+    protected Digester digester = null;
+    /**
+     * The namespace URI for which this Rule is relevant, if any.
+     */
+    protected String namespaceURI = null;
+
+
 
     // ----------------------------------------------------------- Constructors
-
-
     /**
      * <p>Base constructor.
      * Now the digester will be set when the rule is added.</p>
      */
     public Rule() {}
-
-
-    // ----------------------------------------------------- Instance Variables
-
-
-    /**
-     * The Digester with which this Rule is associated.
-     */
-    protected Digester digester = null;
-
-
-    /**
-     * The namespace URI for which this Rule is relevant, if any.
-     */
-    protected String namespaceURI = null;
 
 
     // ------------------------------------------------------------- Properties
@@ -62,27 +56,21 @@ public abstract class Rule {
      * Return the Digester with which this Rule is associated.
      */
     public Digester getDigester() {
-
-        return (this.digester);
-
+        return this.digester;
     }
 
     /**
      * Set the <code>Digester</code> with which this <code>Rule</code> is associated.
      */
     public void setDigester(Digester digester) {
-
         this.digester = digester;
-
     }
 
     /**
      * Return the namespace URI for which this Rule is relevant, if any.
      */
     public String getNamespaceURI() {
-
-        return (this.namespaceURI);
-
+        return this.namespaceURI;
     }
 
 
@@ -93,9 +81,7 @@ public abstract class Rule {
      *  or <code>null</code> to match independent of namespace.
      */
     public void setNamespaceURI(String namespaceURI) {
-
         this.namespaceURI = namespaceURI;
-
     }
 
 
@@ -134,9 +120,7 @@ public abstract class Rule {
      */
     public void begin(String namespace, String name, Attributes attributes)
         throws Exception {
-
         begin(attributes);
-
     }
 
 
@@ -173,9 +157,7 @@ public abstract class Rule {
      */
     public void body(String namespace, String name, String text)
         throws Exception {
-
         body(text);
-
     }
 
 
@@ -208,9 +190,7 @@ public abstract class Rule {
      */
     public void end(String namespace, String name)
         throws Exception {
-
         end();
-
     }
 
 
@@ -221,6 +201,5 @@ public abstract class Rule {
     public void finish() throws Exception {
         // The default implementation does nothing
     }
-
 
 }

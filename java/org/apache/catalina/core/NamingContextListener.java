@@ -295,12 +295,9 @@ public class NamingContextListener
                 }
 
                 if (container instanceof Server) {
-                    org.apache.naming.factory.ResourceLinkFactory.setGlobalContext
-                    (namingContext);
+                    org.apache.naming.factory.ResourceLinkFactory.setGlobalContext(namingContext);
                     try {
-                        ContextBindings.bindClassLoader
-                        (container, container,
-                                this.getClass().getClassLoader());
+                        ContextBindings.bindClassLoader(container, container, this.getClass().getClassLoader());
                     } catch (NamingException e) {
                         logger.error(sm.getString("naming.bindFailed", e));
                     }

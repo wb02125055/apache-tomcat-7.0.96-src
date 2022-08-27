@@ -236,7 +236,7 @@ public interface Lifecycle {
      * @exception LifecycleException if this component detects a fatal error
      *  that prevents this component from being used
      */
-    public void start() throws LifecycleException;
+    void start() throws LifecycleException;
 
 
     /**

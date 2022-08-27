@@ -34,7 +34,6 @@ import org.apache.tomcat.util.res.StringManager;
  */
 public final class RequestUtil {
 
-
     private static final Log log = LogFactory.getLog(RequestUtil.class);
 
     /**
@@ -56,7 +55,7 @@ public final class RequestUtil {
         if (message == null)
             return (null);
 
-        char content[] = new char[message.length()];
+        char[] content = new char[message.length()];
         message.getChars(0, message.length(), content, 0);
         StringBuilder result = new StringBuilder(content.length + 50);
         for (int i = 0; i < content.length; i++) {

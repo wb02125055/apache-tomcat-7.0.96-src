@@ -63,7 +63,7 @@ public final class LifecycleSupport {
     /**
      * The set of registered LifecycleListeners for event notifications.
      */
-    private LifecycleListener listeners[] = new LifecycleListener[0];
+    private LifecycleListener[] listeners = new LifecycleListener[0];
 
     private final Object listenersLock = new Object(); // Lock object for changes to listeners
 
@@ -79,8 +79,7 @@ public final class LifecycleSupport {
     public void addLifecycleListener(LifecycleListener listener) {
 
       synchronized (listenersLock) {
-          LifecycleListener results[] =
-            new LifecycleListener[listeners.length + 1];
+          LifecycleListener[] results = new LifecycleListener[listeners.length + 1];
           for (int i = 0; i < listeners.length; i++)
               results[i] = listeners[i];
           results[listeners.length] = listener;
@@ -110,12 +109,21 @@ public final class LifecycleSupport {
      * @param data Event data
      */
     public void fireLifecycleEvent(String type, Object data) {
-
         LifecycleEvent event = new LifecycleEvent(lifecycle, type, data);
-        LifecycleListener interested[] = listeners;
+        /**
+         通过状态机以及提前注册的LifecycleListener列表来启动，启动的时候，会按照状态依次执行每个listener的lifecycleEvent方法
+         listeners:
+            1. NamingContextListener
+            2. VersionLoggerListener
+            3. AprLifecycleListener
+            4. JasperListener
+            5. JreMemoryLeakPreventionListener
+            6. GlobalResourcesLifecycleListener
+            7. ThreadLocalLeakPreventionListener
+         */
+        LifecycleListener[] interested = listeners;
         for (int i = 0; i < interested.length; i++)
             interested[i].lifecycleEvent(event);
-
     }
 
 
@@ -136,7 +144,7 @@ public final class LifecycleSupport {
             }
             if (n < 0)
                 return;
-            LifecycleListener results[] =
+            LifecycleListener[] results =
               new LifecycleListener[listeners.length - 1];
             int j = 0;
             for (int i = 0; i < listeners.length; i++) {

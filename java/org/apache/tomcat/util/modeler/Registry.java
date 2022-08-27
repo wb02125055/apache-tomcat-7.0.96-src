@@ -153,20 +153,20 @@ public class Registry implements RegistryMBean, MBeanRegistration  {
     public static synchronized Registry getRegistry(Object key, Object guard) {
         Registry localRegistry;
         if( perLoaderRegistries!=null ) {
-            if( key==null )
-                key=Thread.currentThread().getContextClassLoader();
-            if( key != null ) {
+            if (key == null )
+                key = Thread.currentThread().getContextClassLoader();
+            if (key != null ) {
                 localRegistry = perLoaderRegistries.get(key);
                 if( localRegistry == null ) {
-                    localRegistry=new Registry();
-//                    localRegistry.key=key;
-                    localRegistry.guard=guard;
-                    perLoaderRegistries.put( key, localRegistry );
+                    localRegistry = new Registry();
+                    localRegistry.guard = guard;
+                    perLoaderRegistries.put(key, localRegistry);
                     return localRegistry;
                 }
                 if( localRegistry.guard != null &&
                         localRegistry.guard != guard ) {
-                    return null; // XXX Should I throw a permission ex ?
+                    // XXX Should I throw a permission ex ?
+                    return null;
                 }
                 return localRegistry;
             }

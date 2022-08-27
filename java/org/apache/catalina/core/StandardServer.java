@@ -62,28 +62,6 @@ public final class StandardServer extends LifecycleMBeanBase implements Server {
 
     private static final Log log = LogFactory.getLog(StandardServer.class);
 
-
-    // ------------------------------------------------------------ Constructor
-
-
-    /**
-     * Construct a default instance of this class.
-     */
-    public StandardServer() {
-
-        super();
-
-        globalNamingResources = new NamingResources();
-        globalNamingResources.setContainer(this);
-
-        if (isUseNaming()) {
-            namingContextListener = new NamingContextListener();
-            addLifecycleListener(namingContextListener);
-        }
-
-    }
-
-
     // ----------------------------------------------------- Instance Variables
 
 
@@ -96,14 +74,14 @@ public final class StandardServer extends LifecycleMBeanBase implements Server {
     /**
      * Global naming resources.
      */
-    private NamingResources globalNamingResources = null;
+    private NamingResources globalNamingResources;
 
 
     /**
      * Descriptive information about this Server implementation.
      */
     private static final String info =
-        "org.apache.catalina.core.StandardServer/1.0";
+            "org.apache.catalina.core.StandardServer/1.0";
 
 
     /**
@@ -133,7 +111,7 @@ public final class StandardServer extends LifecycleMBeanBase implements Server {
     /**
      * The set of Services associated with this Server.
      */
-    private Service services[] = new Service[0];
+    private Service[] services = new Service[0];
     private final Object servicesLock = new Object();
 
 
@@ -147,7 +125,7 @@ public final class StandardServer extends LifecycleMBeanBase implements Server {
      * The string manager for this package.
      */
     private static final StringManager sm =
-        StringManager.getManager(Constants.Package);
+            StringManager.getManager(Constants.Package);
 
 
     /**
@@ -171,17 +149,40 @@ public final class StandardServer extends LifecycleMBeanBase implements Server {
      */
     private volatile ServerSocket awaitSocket = null;
 
+    private ObjectName onameStringCache;
+    private ObjectName onameMBeanFactory;
+
+
+
+    // ------------------------------------------------------------ Constructor
+
+
+    /**
+     * Construct a default instance of this class.
+     */
+    public StandardServer() {
+
+        super();
+
+        globalNamingResources = new NamingResources();
+        globalNamingResources.setContainer(this);
+
+        // 在创建StandardServer时，会默认给LifeCycleSupport中注册一个NamingContextListener监听器
+        if (isUseNaming()) {
+            namingContextListener = new NamingContextListener();
+            // 给listener中添加namingContextListener实例
+            addLifecycleListener(namingContextListener);
+        }
+
+    }
+
     // ------------------------------------------------------------- Properties
-
-
     /**
      * Return the global naming resources context.
      */
     @Override
     public javax.naming.Context getGlobalNamingContext() {
-
-        return (this.globalNamingContext);
-
+        return this.globalNamingContext;
     }
 
 
@@ -192,9 +193,7 @@ public final class StandardServer extends LifecycleMBeanBase implements Server {
      */
     public void setGlobalNamingContext
         (javax.naming.Context globalNamingContext) {
-
         this.globalNamingContext = globalNamingContext;
-
     }
 
 
@@ -203,9 +202,7 @@ public final class StandardServer extends LifecycleMBeanBase implements Server {
      */
     @Override
     public NamingResources getGlobalNamingResources() {
-
-        return (this.globalNamingResources);
-
+        return this.globalNamingResources;
     }
 
 
@@ -217,17 +214,13 @@ public final class StandardServer extends LifecycleMBeanBase implements Server {
     @Override
     public void setGlobalNamingResources
         (NamingResources globalNamingResources) {
-
-        NamingResources oldGlobalNamingResources =
-            this.globalNamingResources;
+        NamingResources oldGlobalNamingResources = this.globalNamingResources;
         this.globalNamingResources = globalNamingResources;
         this.globalNamingResources.setContainer(this);
         support.firePropertyChange("globalNamingResources",
                                    oldGlobalNamingResources,
                                    this.globalNamingResources);
-
     }
-
 
     /**
      * Return descriptive information about this Server implementation and
@@ -236,9 +229,7 @@ public final class StandardServer extends LifecycleMBeanBase implements Server {
      */
     @Override
     public String getInfo() {
-
-        return (info);
-
+        return info;
     }
 
     /**
@@ -249,7 +240,6 @@ public final class StandardServer extends LifecycleMBeanBase implements Server {
         return ServerInfo.getServerInfo();
     }
 
-
     /**
      * Return the current server built timestamp
      * @return server built timestamp.
@@ -257,7 +247,6 @@ public final class StandardServer extends LifecycleMBeanBase implements Server {
     public String getServerBuilt() {
         return ServerInfo.getServerBuilt();
     }
-
 
     /**
      * Return the current server's version number.
@@ -267,15 +256,12 @@ public final class StandardServer extends LifecycleMBeanBase implements Server {
         return ServerInfo.getServerNumber();
     }
 
-
     /**
      * Return the port number we listen to for shutdown commands.
      */
     @Override
     public int getPort() {
-
-        return (this.port);
-
+        return this.port;
     }
 
 
@@ -286,9 +272,7 @@ public final class StandardServer extends LifecycleMBeanBase implements Server {
      */
     @Override
     public void setPort(int port) {
-
         this.port = port;
-
     }
 
 
@@ -297,9 +281,7 @@ public final class StandardServer extends LifecycleMBeanBase implements Server {
      */
     @Override
     public String getAddress() {
-
-        return (this.address);
-
+        return this.address;
     }
 
 
@@ -310,9 +292,7 @@ public final class StandardServer extends LifecycleMBeanBase implements Server {
      */
     @Override
     public void setAddress(String address) {
-
         this.address = address;
-
     }
 
     /**
@@ -320,9 +300,7 @@ public final class StandardServer extends LifecycleMBeanBase implements Server {
      */
     @Override
     public String getShutdown() {
-
-        return (this.shutdown);
-
+        return this.shutdown;
     }
 
 
@@ -333,9 +311,7 @@ public final class StandardServer extends LifecycleMBeanBase implements Server {
      */
     @Override
     public void setShutdown(String shutdown) {
-
         this.shutdown = shutdown;
-
     }
 
 
@@ -366,11 +342,9 @@ public final class StandardServer extends LifecycleMBeanBase implements Server {
      */
     @Override
     public void addService(Service service) {
-
         service.setServer(this);
-
         synchronized (servicesLock) {
-            Service results[] = new Service[services.length + 1];
+            Service[] results = new Service[services.length + 1];
             System.arraycopy(services, 0, results, 0, services.length);
             results[services.length] = service;
             services = results;
@@ -390,7 +364,7 @@ public final class StandardServer extends LifecycleMBeanBase implements Server {
     }
 
     public void stopAwait() {
-        stopAwait=true;
+        stopAwait = true;
         Thread t = awaitThread;
         if (t != null) {
             ServerSocket s = awaitSocket;
@@ -474,7 +448,7 @@ public final class StandardServer extends LifecycleMBeanBase implements Server {
                         // This should never happen but bug 56684 suggests that
                         // it does.
                         log.warn(sm.getString("standardServer.accept.timeout",
-                                Long.valueOf(System.currentTimeMillis() - acceptStartTime)), ste);
+                                System.currentTimeMillis() - acceptStartTime), ste);
                         continue;
                     } catch (AccessControlException ace) {
                         log.warn("StandardServer.accept security exception: "
@@ -492,8 +466,9 @@ public final class StandardServer extends LifecycleMBeanBase implements Server {
                     // Read a set of characters from the socket
                     int expected = 1024; // Cut off to avoid DoS attack
                     while (expected < shutdown.length()) {
-                        if (random == null)
+                        if (random == null) {
                             random = new Random();
+                        }
                         expected += (random.nextInt() % 1024);
                     }
                     while (expected > 0) {
@@ -502,7 +477,6 @@ public final class StandardServer extends LifecycleMBeanBase implements Server {
                             ch = stream.read();
                         } catch (IOException e) {
                             log.warn("StandardServer.await: read: ", e);
-                            ch = -1;
                         }
                         // Control character or EOF (-1) terminates loop
                         if (ch < 32 || ch == 127) {
@@ -556,7 +530,6 @@ public final class StandardServer extends LifecycleMBeanBase implements Server {
      */
     @Override
     public Service findService(String name) {
-
         if (name == null) {
             return (null);
         }
@@ -577,20 +550,18 @@ public final class StandardServer extends LifecycleMBeanBase implements Server {
      */
     @Override
     public Service[] findServices() {
-
         return (services);
-
     }
 
     /**
      * Return the JMX service names.
      */
     public ObjectName[] getServiceNames() {
-        ObjectName onames[]=new ObjectName[ services.length ];
-        for( int i=0; i<services.length; i++ ) {
-            onames[i]=((StandardService)services[i]).getObjectName();
+        ObjectName[] oNames = new ObjectName[services.length];
+        for (int i = 0; i < services.length; i++ ) {
+            oNames[i]=((StandardService)services[i]).getObjectName();
         }
-        return onames;
+        return oNames;
     }
 
 
@@ -619,7 +590,7 @@ public final class StandardServer extends LifecycleMBeanBase implements Server {
                 // Ignore
             }
             int k = 0;
-            Service results[] = new Service[services.length - 1];
+            Service[] results = new Service[services.length - 1];
             for (int i = 0; i < services.length; i++) {
                 if (i != j)
                     results[k++] = services[i];
@@ -642,9 +613,7 @@ public final class StandardServer extends LifecycleMBeanBase implements Server {
      * @param listener The listener to add
      */
     public void addPropertyChangeListener(PropertyChangeListener listener) {
-
         support.addPropertyChangeListener(listener);
-
     }
 
 
@@ -654,9 +623,7 @@ public final class StandardServer extends LifecycleMBeanBase implements Server {
      * @param listener The listener to remove
      */
     public void removePropertyChangeListener(PropertyChangeListener listener) {
-
         support.removePropertyChangeListener(listener);
-
     }
 
 
@@ -665,7 +632,6 @@ public final class StandardServer extends LifecycleMBeanBase implements Server {
      */
     @Override
     public String toString() {
-
         StringBuilder sb = new StringBuilder("StandardServer[");
         sb.append(getPort());
         sb.append("]");
@@ -705,20 +671,20 @@ public final class StandardServer extends LifecycleMBeanBase implements Server {
      */
     public synchronized void storeContext(Context context) throws Exception {
 
-        ObjectName sname = null;
+        ObjectName sName = null;
         try {
-           sname = new ObjectName("Catalina:type=StoreConfig");
-           if(mserver.isRegistered(sname)) {
-               mserver.invoke(sname, "store",
+            sName = new ObjectName("Catalina:type=StoreConfig");
+           if (mserver.isRegistered(sName)) {
+               mserver.invoke(sName, "store",
                    new Object[] {context},
                    new String [] { "java.lang.String"});
-           } else
-               log.error("StoreConfig mbean not registered" + sname);
+           } else {
+               log.error("StoreConfig mbean not registered " + sName);
+           }
         } catch (Throwable t) {
             ExceptionUtils.handleThrowable(t);
             log.error(t);
         }
-
     }
 
 
@@ -746,8 +712,10 @@ public final class StandardServer extends LifecycleMBeanBase implements Server {
      */
     @Override
     protected void startInternal() throws LifecycleException {
-
+        // 执行所有Listener的lifecycleEvent方法
+        //  执行lifecycleEvent方法时，按照configure_start状态选择对应的逻辑进行执行
         fireLifecycleEvent(CONFIGURE_START_EVENT, null);
+
         setState(LifecycleState.STARTING);
 
         globalNamingResources.start();
@@ -835,8 +803,9 @@ public final class StandardServer extends LifecycleMBeanBase implements Server {
                 cl = cl.getParent();
             }
         }
-        // Initialize our defined Services，启动服务器
+        // Initialize our defined Services
         for (int i = 0; i < services.length; i++) {
+            // 进行自定义Services的初始化
             services[i].init();
         }
     }
@@ -882,10 +851,6 @@ public final class StandardServer extends LifecycleMBeanBase implements Server {
         support.firePropertyChange("parentClassLoader", oldParentClassLoader,
                                    this.parentClassLoader);
     }
-
-
-    private ObjectName onameStringCache;
-    private ObjectName onameMBeanFactory;
 
     /**
      * Obtain the MBean domain for this server. The domain is obtained using

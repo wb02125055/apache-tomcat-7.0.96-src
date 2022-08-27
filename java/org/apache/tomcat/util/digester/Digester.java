@@ -85,7 +85,9 @@ public class Digester extends DefaultHandler2 {
 
     static {
         String className = System.getProperty("org.apache.tomcat.util.digester.PROPERTY_SOURCE");
-        if (className!=null) {
+
+        // 默认为null
+        if (className != null) {
             ClassLoader[] cls = new ClassLoader[] {Digester.class.getClassLoader(),Thread.currentThread().getContextClassLoader()};
             for (int i = 0; i < cls.length; i++) {
                 try {
@@ -112,6 +114,7 @@ public class Digester extends DefaultHandler2 {
 
         super();
 
+        // 默认propertySource为null，所以此处不会执行
         if (propertySource != null) {
             source = new IntrospectionUtils.PropertySource[] { propertySource, source[0] };
         }
@@ -363,7 +366,7 @@ public class Digester extends DefaultHandler2 {
 
 
     /** Stacks used for interrule communication, indexed by name String */
-    private HashMap<String,ArrayStack<Object>> stacksByName =
+    private final HashMap<String,ArrayStack<Object>> stacksByName =
         new HashMap<String,ArrayStack<Object>>();
 
     // ------------------------------------------------------------- Properties
@@ -489,6 +492,7 @@ public class Digester extends DefaultHandler2 {
     ParserConfigurationException {
 
         if (factory == null) {
+            // 通过SAXParserFactory对象来创建实例
             factory = SAXParserFactory.newInstance();
 
             factory.setNamespaceAware(namespaceAware);
@@ -499,6 +503,7 @@ public class Digester extends DefaultHandler2 {
                         true);
             }
 
+            // 默认validating为false
             factory.setValidating(validating);
             if (validating) {
                 // Enable DTD validation
@@ -704,6 +709,7 @@ public class Digester extends DefaultHandler2 {
 
         // Create a new parser
         try {
+            // 创建SaxParserFactory工厂对象，用来获取SAXParser对象
             parser = getFactory().newSAXParser();
         } catch (Exception e) {
             log.error("Digester.getParser: ", e);
@@ -833,9 +839,7 @@ public class Digester extends DefaultHandler2 {
      * @param validating The new validating parser flag.
      */
     public void setValidating(boolean validating) {
-
         this.validating = validating;
-
     }
 
 
@@ -1571,11 +1575,13 @@ public class Digester extends DefaultHandler2 {
      * @exception SAXException if a parsing exception occurs
      */
     public Object parse(InputSource input) throws IOException, SAXException {
-
+        // 留给子类实现的扩展点，用来在xml解析之前实现一些自定义的逻辑
         configure();
-        getXMLReader().parse(input);
-        return (root);
 
+        // 通过XMLReader来解析server.xml配置文件
+        getXMLReader().parse(input);
+
+        return (root);
     }
 
 
@@ -1594,7 +1600,6 @@ public class Digester extends DefaultHandler2 {
         InputSource is = new InputSource(input);
         getXMLReader().parse(is);
         return (root);
-
     }
 
 
@@ -2108,10 +2113,9 @@ public class Digester extends DefaultHandler2 {
      * @see ObjectCreateRule
      */
     public void addObjectCreate(String pattern, String className) {
+        ObjectCreateRule objectCreateRule = new ObjectCreateRule(className);
 
-        addRule(pattern,
-                new ObjectCreateRule(className));
-
+        addRule(pattern, objectCreateRule);
     }
 
 
@@ -2142,8 +2146,9 @@ public class Digester extends DefaultHandler2 {
     public void addObjectCreate(String pattern, String className,
                                 String attributeName) {
 
-        addRule(pattern,
-                new ObjectCreateRule(className, attributeName));
+        ObjectCreateRule objectCreateRule = new ObjectCreateRule(className, attributeName);
+
+        addRule(pattern, objectCreateRule);
 
     }
 
@@ -2195,9 +2200,9 @@ public class Digester extends DefaultHandler2 {
     public void addSetNext(String pattern, String methodName,
                            String paramType) {
 
-        addRule(pattern,
-                new SetNextRule(methodName, paramType));
+        SetNextRule setNextRule = new SetNextRule(methodName, paramType);
 
+        addRule(pattern, setNextRule);
     }
 
 
@@ -2239,10 +2244,9 @@ public class Digester extends DefaultHandler2 {
      * @see SetPropertiesRule
      */
     public void addSetProperties(String pattern) {
+        Rule rule = new SetPropertiesRule();
 
-        addRule(pattern,
-                new SetPropertiesRule());
-
+        addRule(pattern, rule);
     }
 
     /**
